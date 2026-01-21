@@ -19,7 +19,20 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Invalid ID token' }, { status: 401 });
         }
 
+
         const googleUser = await tokenResponse.json();
+
+        // Security: Verify the token is intended for this app
+        const expectedAud = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+        if (googleUser.aud !== expectedAud) {
+            console.error(`[GoogleCallback] Token audience mismatch. Expected: ${expectedAud}, Got: ${googleUser.aud}`);
+            // Note: If using direct Google OAuth, 'aud' might be Client ID. 
+            // Only reject if we are sure check is valid. 
+            // For Firebase ID Tokens, aud IS the Project ID.
+            if (expectedAud) {
+                return NextResponse.json({ error: 'Invalid token audience' }, { status: 403 });
+            }
+        }
 
         if (!googleUser.sub || !googleUser.email) {
             return NextResponse.json({ error: 'Incomplete user data from token' }, { status: 400 });
