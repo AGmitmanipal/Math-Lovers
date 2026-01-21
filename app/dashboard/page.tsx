@@ -130,7 +130,7 @@ export default function DashboardPage() {
                             <div key={q._id} className="group border-b border-gray-200 pb-6 hover:bg-gray-50 transition-colors -mx-4 px-4 rounded-xl">
                                 <Link href={`/question/${q._id}`} className="block">
                                     <div className="flex items-center gap-2 text-xs text-gray-500 mb-2 font-mono">
-                                        <span className="font-bold text-black">@{q.author.username}</span>
+                                        <span className="font-bold text-black">@{q.author?.username || 'Unknown'}</span>
                                         <span>•</span>
                                         <span>{getTimeAgo(q.createdAt)}</span>
                                         {q.image && <span className="ml-2 text-[10px] font-bold border border-black text-black px-1 rounded uppercase">IMG</span>}
